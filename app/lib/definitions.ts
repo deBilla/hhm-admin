@@ -75,6 +75,16 @@ export type FormattedCustomersTable = {
   total_paid: string;
 };
 
+export type FormattedMedicalHelpersTable = {
+  id: string;
+  name: string;
+  email: string;
+  image_url: string;
+  total_invoices: number;
+  total_pending: string;
+  total_paid: string;
+};
+
 export type CustomerField = {
   id: string;
   name: string;
