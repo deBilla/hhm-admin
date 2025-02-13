@@ -76,13 +76,17 @@ export type FormattedCustomersTable = {
 };
 
 export type FormattedMedicalHelpersTable = {
-  id: string;
-  name: string;
+  uuid: string;
+  full_name: string;
   email: string;
-  image_url: string;
-  total_invoices: number;
-  total_pending: string;
-  total_paid: string;
+  profile_photo_url: string;
+  phone: string;
+  date_of_birth: string;
+  gender: string;
+  address: string;
+  qualitfication: string;
+  experience_years: string;
+  verification_status: string;
 };
 
 export type CustomerField = {
