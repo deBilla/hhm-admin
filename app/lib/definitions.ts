@@ -111,6 +111,6 @@ export type MedicalHelper = {
   gender: string;
   address: string;
   qualification: string;
-  experience_years: string;
+  experience_years: number;
   verification_status: string;
 };

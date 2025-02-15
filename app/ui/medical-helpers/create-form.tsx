@@ -1,10 +1,16 @@
-import Link from 'next/link';
-import { Button } from '@/app/ui/button';
-import { createMedicalHelper } from '@/app/lib/actions';
+"use client";
+
+import Link from "next/link";
+import { Button } from "@/app/ui/button";
+import { createMedicalHelper, State } from "@/app/lib/actions";
+import { useActionState } from "react";
 
 export default function Form() {
+  const initialState: State = { message: null, errors: {} };
+  const [state, formAction] = useActionState(createMedicalHelper, initialState);
+
   return (
-    <form action={createMedicalHelper}>
+    <form action={formAction}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         <div className="mb-4">
           <label htmlFor="fullName" className="mb-2 block text-sm font-medium">
@@ -16,8 +22,17 @@ export default function Form() {
                 id="fullName"
                 name="fullName"
                 type="string"
+                aria-describedby="full-name-error"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               />
+            </div>
+            <div id="customer-error" aria-live="polite" aria-atomic="true">
+              {state.errors?.full_name &&
+                state.errors.full_name.map((error: string) => (
+                  <p className="mt-2 text-sm text-red-500" key={error}>
+                    {error}
+                  </p>
+                ))}
             </div>
           </div>
         </div>
@@ -37,7 +52,10 @@ export default function Form() {
           </div>
         </div>
         <div className="mb-4">
-          <label htmlFor="profilePhotoUrl" className="mb-2 block text-sm font-medium">
+          <label
+            htmlFor="profilePhotoUrl"
+            className="mb-2 block text-sm font-medium"
+          >
             Profile Picture URL
           </label>
           <div className="relative mt-2 rounded-md">
@@ -67,7 +85,10 @@ export default function Form() {
           </div>
         </div>
         <div className="mb-4">
-          <label htmlFor="dateOfBirth" className="mb-2 block text-sm font-medium">
+          <label
+            htmlFor="dateOfBirth"
+            className="mb-2 block text-sm font-medium"
+          >
             Date of Birth
           </label>
           <div className="relative mt-2 rounded-md">
@@ -112,7 +133,10 @@ export default function Form() {
           </div>
         </div>
         <div className="mb-4">
-          <label htmlFor="qualification" className="mb-2 block text-sm font-medium">
+          <label
+            htmlFor="qualification"
+            className="mb-2 block text-sm font-medium"
+          >
             Qualification
           </label>
           <div className="relative mt-2 rounded-md">
@@ -127,7 +151,10 @@ export default function Form() {
           </div>
         </div>
         <div className="mb-4">
-          <label htmlFor="experienceYears" className="mb-2 block text-sm font-medium">
+          <label
+            htmlFor="experienceYears"
+            className="mb-2 block text-sm font-medium"
+          >
             Expierience Years
           </label>
           <div className="relative mt-2 rounded-md">
@@ -135,14 +162,17 @@ export default function Form() {
               <input
                 id="experienceYears"
                 name="experienceYears"
-                type="string"
+                type="number"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               />
             </div>
           </div>
         </div>
         <div className="mb-4">
-          <label htmlFor="verificationStatus" className="mb-2 block text-sm font-medium">
+          <label
+            htmlFor="verificationStatus"
+            className="mb-2 block text-sm font-medium"
+          >
             Verification Status
           </label>
           <div className="relative mt-2 rounded-md">

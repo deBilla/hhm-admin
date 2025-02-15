@@ -17,14 +17,14 @@ const FormSchema = z.object({
   gender: z.enum(['Male', 'Female', 'Other']),
   address: z.string(),
   qualification: z.string(),
-  experience_years: z.string(),
+  experience_years: z.coerce.number({invalid_type_error: 'Please Enter a Valid Number !!!'}).gt(0, {message: 'Please enter a number greater than 1'}),
   verification_status: z.enum(['Pending', 'Verified', 'Rejected'])
 });
  
 const CreateMedicalHelper = FormSchema.omit({ uuid: true });
 
-export async function createMedicalHelper(formData: FormData) {
-  const newMedicalHelper = CreateMedicalHelper.parse({
+export async function createMedicalHelper(prevState: State, formData: FormData) {
+  const validatedFields = CreateMedicalHelper.safeParse({
     full_name: formData.get('fullName'),
     email: formData.get('email'),
     profile_photo_url: formData.get('profilePhotoUrl'),
@@ -37,17 +37,20 @@ export async function createMedicalHelper(formData: FormData) {
     verification_status: formData.get('verificationStatus'),
   });
 
-  console.log(newMedicalHelper);
-  const response = await postMedicalHelper(newMedicalHelper);
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Create Invoice.',
+    };
+  }
 
-  console.log(response);
-
+  await postMedicalHelper(validatedFields.data);
   revalidatePath('/dashboard/medical-helpers');
   redirect('/dashboard/medical-helpers');
 }
 
-export async function updateMedicalHelper(id: string, formData: FormData) {
-  const newMedicalHelper = CreateMedicalHelper.parse({
+export async function updateMedicalHelper(prevState: State, id: string, formData: FormData) {
+  const validatedFields = CreateMedicalHelper.safeParse({
     full_name: formData.get('fullName'),
     email: formData.get('email'),
     profile_photo_url: formData.get('profilePhotoUrl'),
@@ -60,11 +63,14 @@ export async function updateMedicalHelper(id: string, formData: FormData) {
     verification_status: formData.get('verificationStatus'),
   });
 
-  console.log(newMedicalHelper);
-  const response = await putMedicalHelper(id, newMedicalHelper);
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Create Invoice.',
+    };
+  }
 
-  console.log(response);
-
+  await putMedicalHelper(id, validatedFields.data);
   revalidatePath('/dashboard/medical-helpers');
   redirect('/dashboard/medical-helpers');
 }
@@ -92,3 +98,19 @@ export async function authenticate(
     throw error;
   }
 }
+
+export type State = {
+  errors?: {
+    full_name?: string[],
+    email?: string[],
+    profile_photo_url?: string[],
+    phone?: string[],
+    date_of_birth?: string[],
+    gender?: string[],
+    address?: string[],
+    qualification?: string[],
+    experience_years?: string[],
+    verification_status?: string[],
+  };
+  message?: string | null;
+};
