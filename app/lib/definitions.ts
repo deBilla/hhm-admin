@@ -100,3 +100,17 @@ export type InvoiceForm = {
   amount: number;
   status: 'pending' | 'paid';
 };
+
+export type MedicalHelper = {
+  uuid: string;
+  full_name: string;
+  email: string;
+  profile_photo_url: string;
+  phone: string;
+  date_of_birth: string;
+  gender: string;
+  address: string;
+  qualification: string;
+  experience_years: string;
+  verification_status: string;
+};

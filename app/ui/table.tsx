@@ -1,4 +1,7 @@
+import { PencilIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
+import Link from "next/link";
+import { DeleteMedicalHelperButton, UpdateMedicalHelperButton } from "./medical-helpers/buttons";
 
 type TableProps<T> = {
   data: T[];
@@ -95,6 +98,12 @@ export default function Table<T>({
                   )}
                 </td>
               ))}
+              <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                <div className="flex justify-end gap-3">
+                <UpdateMedicalHelperButton id={item.uuid} />
+                <DeleteMedicalHelperButton id={item.uuid} />
+                </div>
+              </td>
             </tr>
           ))}
         </tbody>

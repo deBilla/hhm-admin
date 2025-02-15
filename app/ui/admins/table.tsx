@@ -20,10 +20,13 @@ export default function MedicalHelpers({
   };  
 
   return (
-    <Table
+    <div className="w-full">
+      <h1 className="text-xl mb-8">Medical Helpers</h1>
+      <Table
         data={medicalHelpers}
         columns={columns}
         imageColumns={["profile_photo_url"]}
       />
+    </div>
   );
 }
