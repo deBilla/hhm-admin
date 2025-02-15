@@ -6,7 +6,6 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import { deleteMedicalHelperById, postMedicalHelper, putMedicalHelper } from '../dashboard/medical-helpers/data';
-import { MedicalHelper } from './definitions';
  
 const FormSchema = z.object({
   uuid: z.string(),

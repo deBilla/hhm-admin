@@ -1,7 +1,8 @@
-import { PencilIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
-import Link from "next/link";
-import { DeleteMedicalHelperButton, UpdateMedicalHelperButton } from "./medical-helpers/buttons";
+import {
+  DeleteMedicalHelperButton,
+  UpdateMedicalHelperButton,
+} from "./medical-helpers/buttons";
 
 type TableProps<T> = {
   data: T[];
@@ -10,7 +11,7 @@ type TableProps<T> = {
   mobileCardView?: boolean;
 };
 
-export default function Table<T>({
+export default function Table<T extends { uuid: string }>({
   data,
   columns,
   imageColumns = [],
@@ -23,47 +24,55 @@ export default function Table<T>({
       {/* Mobile Card View */}
       {mobileCardView && (
         <div className="md:hidden">
-          {data.map((item: any, index) => (
+          {data.map((item: T, index) => (
             <div
               key={index}
               className="mb-2 w-full rounded-md bg-white p-4 shadow"
             >
-              <div className="flex items-center justify-between border-b pb-4 overflow-hidden">
-                {columnKeys.slice(0, 2).map((key) => (
+              <div className="flex items-center justify-between  pb-4 overflow-hidden">
+                {columnKeys.slice(0, 2).map((key: string) => (
                   <div key={key}>
                     {imageColumns.includes(key) ? (
                       <Image
-                        src={item[key] as string}
+                        src={item[key as keyof T] as string}
                         className="rounded-full"
                         alt="Profile"
                         width={100}
                         height={100}
                       />
                     ) : (
-                      <p className="text-sm">{item[key]}</p>
+                      <p className="text-sm">
+                        {item[key as keyof T] as string}
+                      </p>
                     )}
                   </div>
                 ))}
               </div>
               {columnKeys.length > 2 && (
-                <div className="flex items-center justify-between border-b pb-4 overflow-hidden">
+                <div className="flex items-center justify-between pb-4 overflow-hidden">
                   {columnKeys.slice(2, 4).map((key) => (
                     <div key={key}>
                       {imageColumns.includes(key) ? (
                         <Image
-                          src={item[key] as string}
+                          src={item[key as keyof T] as string}
                           className="rounded-full"
                           alt="Profile"
                           width={100}
                           height={100}
                         />
                       ) : (
-                        <p className="text-sm">{item[key]}</p>
+                        <p className="text-sm">
+                          {item[key as keyof T] as string}
+                        </p>
                       )}
                     </div>
                   ))}
                 </div>
               )}
+              <div className="flex items-center justify-between border-b pb-4 overflow-hidden">
+                <UpdateMedicalHelperButton id={item.uuid} />
+                <DeleteMedicalHelperButton id={item.uuid} />
+              </div>
             </div>
           ))}
         </div>
@@ -81,27 +90,27 @@ export default function Table<T>({
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 text-gray-900">
-          {data.map((item: any, index) => (
+          {data.map((item: T, index) => (
             <tr key={index}>
               {columnKeys.map((key) => (
                 <td key={key} className="bg-white px-4 py-5 text-sm">
                   {imageColumns.includes(key) ? (
                     <Image
-                      src={item[key] as string}
+                      src={item[key as keyof T] as string}
                       className="rounded-full"
                       alt="Profile"
                       width={70}
                       height={70}
                     />
                   ) : (
-                    <p>{item[key]}</p>
+                    <p>{item[key as keyof T] as string}</p>
                   )}
                 </td>
               ))}
               <td className="whitespace-nowrap py-3 pl-6 pr-3">
                 <div className="flex justify-end gap-3">
-                <UpdateMedicalHelperButton id={item.uuid} />
-                <DeleteMedicalHelperButton id={item.uuid} />
+                  <UpdateMedicalHelperButton id={item.uuid} />
+                  <DeleteMedicalHelperButton id={item.uuid} />
                 </div>
               </td>
             </tr>

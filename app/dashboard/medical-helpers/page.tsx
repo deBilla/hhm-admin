@@ -4,15 +4,17 @@ import { lusitana } from '@/app/ui/fonts';
 import { getMedicalHelpers } from "./data";
 import { CreateMedicalHelperButton } from "@/app/ui/medical-helpers/buttons";
 
-export default async function Page(props: {
-  searchParams?: Promise<{
-    query?: string;
-    page?: string;
-  }>;
-}) {
-  const searchParams = await props.searchParams;
-  const query = searchParams?.query || '';
-  const currentPage = Number(searchParams?.page) || 1;
+export default async function Page(
+//   props: {
+//   searchParams?: Promise<{
+//     query?: string;
+//     page?: string;
+//   }>;
+// }
+) {
+  // const searchParams = await props.searchParams;
+  // const query = searchParams?.query || '';
+  // const currentPage = Number(searchParams?.page) || 1;
   const medicalHelpers = await getMedicalHelpers() || [];
   
   return (
