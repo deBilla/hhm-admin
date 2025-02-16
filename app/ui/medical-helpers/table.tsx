@@ -1,29 +1,25 @@
-import { FormattedMedicalHelpersTable } from "@/app/lib/definitions";
+"use client";
+import { MedicalHelper } from "@/app/lib/definitions";
+import AgGrid from "../ag-grid";
+import { columnBuilder } from "../util";
+import { putMedicalHelper } from "@/app/dashboard/medical-helpers/data";
+import { CellValueChangedEvent, ColDef } from "ag-grid-community";
+import { redirect } from "next/navigation";
+import { confirmAlert } from "react-confirm-alert";
+import { showConfirmDialog } from "../confirm-dialog";
 import Table from "../table";
 
 export default function MedicalHelpers({
   medicalHelpers,
+  query,
 }: {
-  medicalHelpers: FormattedMedicalHelpersTable[];
+  medicalHelpers: MedicalHelper[];
+  query: string;
 }) {
-  const columns = {
-    profile_photo_url: "Profile Photo",
-    full_name: "Full Name",
-    phone: "Phone",
-    email: "Email",
-    date_of_birth: "Date of Birth",
-    gender: "Gender",
-    address: "Address",
-    qualification: "Qualification",
-    experience_years: "Experience (Years)",
-    verification_status: "Verification Status",
-  };  
-
   return (
     <Table
-        data={medicalHelpers}
-        columns={columns}
-        imageColumns={["profile_photo_url"]}
-      />
+      data={medicalHelpers}
+      imageColumns={[]}
+    />
   );
 }

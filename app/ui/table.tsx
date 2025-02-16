@@ -3,21 +3,49 @@ import {
   DeleteMedicalHelperButton,
   UpdateMedicalHelperButton,
 } from "./medical-helpers/buttons";
+import AgGrid from "./ag-grid";
+import { columnBuilder } from "./util";
+import { CellValueChangedEvent, ColDef } from "ag-grid-community";
+import { putMedicalHelper } from "../dashboard/medical-helpers/data";
+import { redirect } from "next/navigation";
+import { MedicalHelper } from "../lib/definitions";
+import { showConfirmDialog } from "./confirm-dialog";
 
 type TableProps<T> = {
   data: T[];
-  columns: { [key: string]: string };
   imageColumns?: string[];
   mobileCardView?: boolean;
 };
 
 export default function Table<T extends { uuid: string }>({
   data,
-  columns,
-  imageColumns = [],
+  imageColumns = ["profile_photo_url"],
   mobileCardView = true,
 }: TableProps<T>) {
-  const columnKeys = Object.keys(columns);
+  const columns: ColDef[] = columnBuilder(data);
+
+  const handleCellEdit = async (event: CellValueChangedEvent) => {
+    console.log(event);
+    const data = event.data;
+    await putMedicalHelper(data.uuid, data);
+    redirect("/dashboard/medical-helpers");
+  };
+
+  const handleRowDelete = async (data: T): Promise<boolean> => {
+    return new Promise((resolve) => {
+      showConfirmDialog(
+        "Confirm Deletion",
+        "Are you sure you want to delete this item? This action cannot be undone.",
+        () => {
+          console.log(data);
+          resolve(true);
+        },
+        () => {
+          resolve(false);
+        }
+      );
+    });
+  };
 
   return (
     <div className="overflow-hidden rounded-md bg-gray-50 p-2 md:pt-0">
@@ -30,11 +58,11 @@ export default function Table<T extends { uuid: string }>({
               className="mb-2 w-full rounded-md bg-white p-4 shadow"
             >
               <div className="flex items-center justify-between  pb-4 overflow-hidden">
-                {columnKeys.slice(0, 2).map((key: string) => (
-                  <div key={key}>
-                    {imageColumns.includes(key) ? (
+                {columns.slice(0, 2).map((column: ColDef) => (
+                  <div key={column.field}>
+                    {imageColumns.includes(column.field as string) ? (
                       <Image
-                        src={item[key as keyof T] as string}
+                        src={item[column.field as keyof T] as string}
                         className="rounded-full"
                         alt="Profile"
                         width={100}
@@ -42,19 +70,19 @@ export default function Table<T extends { uuid: string }>({
                       />
                     ) : (
                       <p className="text-sm">
-                        {item[key as keyof T] as string}
+                        {item[column.field as keyof T] as string}
                       </p>
                     )}
                   </div>
                 ))}
               </div>
-              {columnKeys.length > 2 && (
+              {columns.length > 2 && (
                 <div className="flex items-center justify-between pb-4 overflow-hidden">
-                  {columnKeys.slice(2, 4).map((key) => (
-                    <div key={key}>
-                      {imageColumns.includes(key) ? (
+                  {columns.slice(2, 4).map((column: ColDef) => (
+                    <div key={column.field}>
+                      {imageColumns.includes(column.field as string) ? (
                         <Image
-                          src={item[key as keyof T] as string}
+                          src={item[column.field as keyof T] as string}
                           className="rounded-full"
                           alt="Profile"
                           width={100}
@@ -62,7 +90,7 @@ export default function Table<T extends { uuid: string }>({
                         />
                       ) : (
                         <p className="text-sm">
-                          {item[key as keyof T] as string}
+                          {item[column.field as keyof T] as string}
                         </p>
                       )}
                     </div>
@@ -79,44 +107,14 @@ export default function Table<T extends { uuid: string }>({
       )}
 
       {/* Desktop Table View */}
-      <table className="hidden min-w-full rounded-md text-gray-900 md:table">
-        <thead className="bg-gray-50 text-left text-sm font-normal">
-          <tr>
-            {columnKeys.map((key) => (
-              <th key={key} className="px-4 py-5 font-medium">
-                {columns[key]}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-200 text-gray-900">
-          {data.map((item: T, index) => (
-            <tr key={index}>
-              {columnKeys.map((key) => (
-                <td key={key} className="bg-white px-4 py-5 text-sm">
-                  {imageColumns.includes(key) ? (
-                    <Image
-                      src={item[key as keyof T] as string}
-                      className="rounded-full"
-                      alt="Profile"
-                      width={70}
-                      height={70}
-                    />
-                  ) : (
-                    <p>{item[key as keyof T] as string}</p>
-                  )}
-                </td>
-              ))}
-              <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                <div className="flex justify-end gap-3">
-                  <UpdateMedicalHelperButton id={item.uuid} />
-                  <DeleteMedicalHelperButton id={item.uuid} />
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="hidden min-w-full rounded-md text-gray-900 md:table">
+        <AgGrid
+          colDefs={columnBuilder(data)}
+          rowData={data}
+          handleCellValueEdit={handleCellEdit}
+          handleRowDelete={handleRowDelete}
+        />
+      </div>
     </div>
   );
 }

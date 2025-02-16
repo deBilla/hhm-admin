@@ -1,22 +1,20 @@
 import MedicalHelpers from "@/app/ui/medical-helpers/table";
 import Search from "@/app/ui/search";
-import { lusitana } from '@/app/ui/fonts';
+import { lusitana } from "@/app/ui/fonts";
 import { getMedicalHelpers } from "./data";
 import { CreateMedicalHelperButton } from "@/app/ui/medical-helpers/buttons";
 
-export default async function Page(
-//   props: {
-//   searchParams?: Promise<{
-//     query?: string;
-//     page?: string;
-//   }>;
-// }
-) {
-  // const searchParams = await props.searchParams;
-  // const query = searchParams?.query || '';
+export default async function Page(props: {
+  searchParams?: Promise<{
+    query?: string;
+    page?: string;
+  }>;
+}) {
+  const searchParams = await props.searchParams;
+  const query = searchParams?.query || "";
   // const currentPage = Number(searchParams?.page) || 1;
-  const medicalHelpers = await getMedicalHelpers() || [];
-  
+  const medicalHelpers = (await getMedicalHelpers()) || [];
+
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
@@ -27,7 +25,7 @@ export default async function Page(
         <CreateMedicalHelperButton />
       </div>
       <div className="mt-6 flow-root">
-      <MedicalHelpers medicalHelpers = {medicalHelpers} />
+        <MedicalHelpers query={query} medicalHelpers={medicalHelpers} />
       </div>
       {/*  <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
         <Table query={query} currentPage={currentPage} />
@@ -36,5 +34,5 @@ export default async function Page(
         {/* <Pagination totalPages={totalPages} /> */}
       </div>
     </div>
-  )
+  );
 }
