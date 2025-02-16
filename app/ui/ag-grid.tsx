@@ -37,7 +37,7 @@ export default function AgGrid<T>({
 
     if (isDeleted)
       gridRef.current!.api.applyTransaction({ remove: selectedRowData });
-  }, []);
+  }, [handleRowDelete]);
 
   return (
     <div>

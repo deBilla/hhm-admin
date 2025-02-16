@@ -5,7 +5,7 @@ export function columnBuilder<T>(
   excludefilterColumns: string[] = [],
   excludeColumns: string[] = []
 ): ColDef[] {
-  return Object.keys(data[0] as Object)
+  return Object.keys(data[0] as object)
     .filter((col) => !excludeColumns.includes(col))
     .map((column) => {
       return !excludefilterColumns.includes(column)

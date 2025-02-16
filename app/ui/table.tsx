@@ -8,7 +8,6 @@ import { columnBuilder } from "./util";
 import { CellValueChangedEvent, ColDef } from "ag-grid-community";
 import { putMedicalHelper } from "../dashboard/medical-helpers/data";
 import { redirect } from "next/navigation";
-import { MedicalHelper } from "../lib/definitions";
 import { showConfirmDialog } from "./confirm-dialog";
 
 type TableProps<T> = {
